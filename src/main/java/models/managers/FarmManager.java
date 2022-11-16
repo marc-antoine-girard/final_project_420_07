@@ -1,6 +1,7 @@
 package models.managers;
 
 import models.entities.Farm;
+import org.apache.commons.dbutils.QueryRunner;
 import org.intellij.lang.annotations.Language;
 import services.DatabaseConnection;
 
@@ -17,58 +18,40 @@ public class FarmManager {
     private static final String queryAll = "select * from farm";
 
     public static HashMap<Integer, Farm> getAll() {
-        HashMap<Integer, Farm> result = new HashMap<>();
-
-        // Get service // Do query
-        try (PreparedStatement preparedStatement = DatabaseConnection.getInstance().preparedQuery(queryAll)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            // Process result
-            while (resultSet.next()) {
-                int id = resultSet.getInt("farm_id");
-                String farm_name = resultSet.getString("farm_name");
-                String country = resultSet.getString("country");
-
-                Farm farm = new Farm(id, farm_name, country);
-
-                result.put(farm.getId(), farm); // add all farms
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            DatabaseConnection.getInstance().close(); // very important
+        try
+        {
+            QueryRunner runner = DatabaseConnection.getInstance().runner();
+            return runner.query(queryAll, FarmManager::handle);
         }
-
-        // return result
-        return result;
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
     public static HashMap<Integer, Farm> getByCountry(String value) {
-        HashMap<Integer, Farm> result = new HashMap<>();
-
-        try (PreparedStatement preparedStatement = DatabaseConnection.getInstance().preparedQuery(queryByCountry)) {
-            preparedStatement.setString(1, value.toLowerCase()); // index starts at 1 instead of 0
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()){
-                int id = resultSet.getInt("farm_id");
-                String farm_name = resultSet.getString("farm_name");
-                String country = resultSet.getString("country");
-
-                Farm farm = new Farm(id, farm_name, country);
-
-                result.put(farm.getId(), farm);
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            DatabaseConnection.getInstance().close();
+        try
+        {
+            QueryRunner runner = DatabaseConnection.getInstance().runner();
+            return runner.query(queryByCountry, FarmManager::handle, value);
         }
-
-        return result;
+        catch (SQLException e)
+        {
+            throw new RuntimeException(e);
+        }
     }
 
+    private static HashMap<Integer, Farm> handle(ResultSet resultSet) throws SQLException {
+        HashMap<Integer, Farm> temp = new HashMap<>();
+        while (resultSet.next()) {
+            int id = resultSet.getInt("farm_id");
+            String farm_name = resultSet.getString("farm_name");
+            String country = resultSet.getString("country");
+
+            Farm farm = new Farm(id, farm_name, country);
+
+            temp.put(farm.getId(), farm);
+        }
+        return temp;
+    }
 }

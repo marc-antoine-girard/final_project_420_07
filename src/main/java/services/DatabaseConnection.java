@@ -1,16 +1,21 @@
 package services;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import org.apache.commons.dbcp.BasicDataSource;
+import org.apache.commons.dbutils.QueryRunner;
+
 
 public class DatabaseConnection {
 
     //region singleton
     private static DatabaseConnection instance;
+    private final BasicDataSource basicDataSource;
 
     private DatabaseConnection() {
+        basicDataSource = new BasicDataSource();
+        basicDataSource.setUrl("jdbc:mysql://localhost:3306/farm_db");
+        basicDataSource.setUsername("root");
+        basicDataSource.setPassword("abc123...");
+        basicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
     }
 
     public static DatabaseConnection getInstance() {
@@ -20,34 +25,7 @@ public class DatabaseConnection {
     }
     //endregion
 
-    private final String urlConnection = "jdbc:mysql://localhost:3306/farm_db";
-    private final String username = "root";
-    private final String password = "abc123..."; // the one you set in the installation
-    private Connection connection = null;
-
-    public PreparedStatement preparedQuery(String query) {
-        PreparedStatement ps = null;
-
-        try {
-            if (connection == null || connection.isClosed()) {
-                Class.forName("com.mysql.cj.jdbc.Driver"); // makes sure the library is in project
-                connection = DriverManager.getConnection(urlConnection, username, password);
-                ps = connection.prepareStatement(query);
-            }
-
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return ps;
+    public QueryRunner runner() {
+        return new QueryRunner(basicDataSource);
     }
-
-    public void close() {
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
 }
