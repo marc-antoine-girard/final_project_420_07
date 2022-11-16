@@ -12,6 +12,9 @@ public class Farm {
         this.country = country;
     }
 
+    public Farm() {
+    }
+
     /* Getter Setter */
 
     public int getId() {

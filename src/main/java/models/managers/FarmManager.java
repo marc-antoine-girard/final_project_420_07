@@ -1,20 +1,20 @@
 package models.managers;
 
 import models.entities.Farm;
+import org.apache.commons.dbutils.BeanProcessor;
 import org.apache.commons.dbutils.QueryRunner;
-import org.intellij.lang.annotations.Language;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.BeanMapHandler;
 import services.DatabaseConnection;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class FarmManager {
 
-    @Language("SQL") // need to set datasource to use this
     private static final String queryByCountry = "select * from farm where lower(country) = ?";
-    @Language("SQL") // we now know the query works
     private static final String queryAll = "select * from farm";
 
     public static HashMap<Integer, Farm> getAll() {
@@ -29,11 +29,11 @@ public class FarmManager {
         }
     }
 
-    public static HashMap<Integer, Farm> getByCountry(String value) {
+    public static Map<Integer, Farm> getByCountry(String value) {
         try
         {
             QueryRunner runner = DatabaseConnection.getInstance().runner();
-            return runner.query(queryByCountry, FarmManager::handle, value);
+            return runner.query(queryByCountry, new BeanMapHandler<>(Farm.class, "farm_id"), value);
         }
         catch (SQLException e)
         {
