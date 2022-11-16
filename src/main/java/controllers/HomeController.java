@@ -15,8 +15,6 @@ public class HomeController extends HttpServlet {
 
         request.setAttribute("servlet-message", "From Servlet");
 
-        // last thing to do. Redirects to jsp page
-
         request.getRequestDispatcher("WEB-INF/home.jsp").forward(request, response);
     }
 }
