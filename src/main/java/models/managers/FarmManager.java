@@ -1,9 +1,7 @@
 package models.managers;
 
 import models.entities.Farm;
-import org.apache.commons.dbutils.BeanProcessor;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.BeanMapHandler;
 import services.DatabaseConnection;
 
