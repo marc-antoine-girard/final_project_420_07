@@ -30,7 +30,7 @@ public class DatabaseConnection {
         basicDataSource.setUrl("jdbc:mysql://localhost:3306/farm_db");
         basicDataSource.setUsername("root");
         basicDataSource.setPassword("abc123...");
-        basicDataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        basicDataSource.setDriverClassName("com.mysql.jdbc.Driver");
     }
 
     public QueryRunner runner() {
