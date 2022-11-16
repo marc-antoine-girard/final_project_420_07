@@ -1,11 +1,13 @@
 package models.entities;
 
-public class Farm {
+import java.io.Serializable;
+
+public class Farm implements Serializable {
     private int id;
     private String name;
     private String country;
 
-    /* Constructor */
+    /* Constructors */
     public Farm(int id, String name, String country) {
         this.id = id;
         this.name = name;

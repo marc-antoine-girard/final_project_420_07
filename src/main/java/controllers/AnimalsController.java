@@ -15,6 +15,7 @@ public class AnimalsController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String country = request.getParameter("country");
+
         if (country != null) {
             FarmAction.getByCountry(request, country);
         } else {
